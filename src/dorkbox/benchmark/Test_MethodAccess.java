@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
 // from: https://stackoverflow.com/questions/14146570/calling-a-getter-in-java-though-reflection-whats-the-fastest-way-to-repeatedly/14146919#14146919
-// modified by dorkbox
+// modified by dorkbox, llc
 public abstract class Test_MethodAccess {
 
     final String name;
