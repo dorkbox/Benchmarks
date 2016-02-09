@@ -51,23 +51,15 @@ import org.bushe.swing.event.annotation.AnnotationProcessor;
  */
 public interface IEventBus {
 
-    public void shutdown();
+    void shutdown();
+    void publish(Object event);
+    void publishAsync(Object event);
+    void subscribe(Object listener);
+    boolean unsubscribe(Object listener);
+    boolean hasPending();
+    String getName();
 
-    public void publish(Object event);
-    public void publishAsync(Object event);
-
-    public void subscribe(Object listener);
-
-    public boolean unsubscribe(Object listener);
-
-    public boolean hasPending();
-
-    public String getName();
-
-
-
-    public class GuavaBusAdapter implements IEventBus {
-
+    class GuavaBusAdapter implements IEventBus {
         private com.google.common.eventbus.EventBus delegate = new com.google.common.eventbus.EventBus();
 
         @Override
@@ -110,8 +102,7 @@ public interface IEventBus {
         }
     }
 
-    public class MbassadorAdapter implements IEventBus {
-
+    class MbassadorAdapter implements IEventBus {
         private MBassador delegate = new MBassador();
 
         @Override
@@ -149,8 +140,7 @@ public interface IEventBus {
         }
     }
 
-    public class MessageBusAdapter implements IEventBus {
-
+    class MessageBusAdapter implements IEventBus {
         public MessageBus delegate = new MessageBus();
 
         @Override
@@ -191,8 +181,7 @@ public interface IEventBus {
     }
 
 
-    public class SimpleBusAdapter implements IEventBus {
-
+    class SimpleBusAdapter implements IEventBus {
         @Override
         public void publish(Object event) {
             EventBusService.publish(event);
@@ -230,8 +219,7 @@ public interface IEventBus {
     }
 
 
-    public class EventBusAdapter implements IEventBus {
-
+    class EventBusAdapter implements IEventBus {
         @Override
         public void publish(Object event) {
             org.bushe.swing.event.EventBus.publish(event);
@@ -268,8 +256,7 @@ public interface IEventBus {
         }
     }
 
-    public class MycilaAdapter implements IEventBus {
-
+    class MycilaAdapter implements IEventBus {
         private Dispatcher bus = Dispatchers.synchronousSafe();
 
         @Override
@@ -307,8 +294,7 @@ public interface IEventBus {
         }
     }
 
-    public class MycilaAdapterAsync implements IEventBus {
-
+    class MycilaAdapterAsync implements IEventBus {
         private Dispatcher bus = Dispatchers.asynchronousSafe();
 
         @Override
