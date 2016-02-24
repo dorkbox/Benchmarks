@@ -206,8 +206,7 @@ class Test_Queue_Disruptor<T> {
 
 
 
-
-        for (int i=0;i<consumersCount;i++) {
+        for (int i = 0; i < consumersCount; i++) {
             EventHandler h = (EventHandler) handlers[i];
             while (!h.isShutdown()) {
                 Thread.yield();
@@ -218,12 +217,12 @@ class Test_Queue_Disruptor<T> {
         long start = Long.MAX_VALUE;
         long end = -1;
 
-        for (int i=0;i<producersCount;i++) {
+        for (int i = 0; i < producersCount; i++) {
             if (producers[i].start - start < 0) {
                 start = producers[i].start;
             }
         }
-        for (int i=0;i<consumersCount;i++) {
+        for (int i = 0; i < consumersCount; i++) {
             EventHandler h = (EventHandler) handlers[i];
             final long end1 = h.getEnd();
             if (end1 - end > 0) {
