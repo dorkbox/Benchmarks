@@ -116,9 +116,11 @@ class Test_Queue_Disruptor<T> {
                                                           new java.util.concurrent.LinkedTransferQueue<Runnable>(),
                                                           DaemonThreadFactory.INSTANCE);
 
-        final PubExceptionHandler exceptionHandler = new PubExceptionHandler();
+
+        final PubExceptionHandler<ValueHolder<T>> exceptionHandler = new PubExceptionHandler<ValueHolder<T>>();
         ValueFactory<T> factory = new ValueFactory<T>();
 
+        //noinspection unchecked
         WorkHandler<ValueHolder<T>> handlers[] = new EventHandler[consumersCount];
         for (int i = 0; i < handlers.length; i++) {
             handlers[i] = new EventHandler<T>();  // exactly one per thread
@@ -277,14 +279,14 @@ class Test_Queue_Disruptor<T> {
         }
     }
 
-    public final class PubExceptionHandler implements ExceptionHandler {
+    class PubExceptionHandler<E> implements ExceptionHandler<E> {
 
         public
         PubExceptionHandler() {
         }
 
         @Override
-        public void handleEventException(final Throwable e, final long sequence, final Object event) {
+        public void handleEventException(final Throwable e, final long sequence, final E event) {
             System.err.println("Exception processing: " + sequence + " " + event.getClass() + "(" + event + ")  "  + e.getMessage());
         }
 
