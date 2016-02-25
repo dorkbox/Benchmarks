@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.LockSupport;
 
 @SuppressWarnings("Duplicates")
 public
@@ -144,11 +143,7 @@ class Test_Queue_Disruptor<T> {
         Sequence workSequence = new Sequence(Sequencer.INITIAL_CURSOR_VALUE);
 
         for (int i = 0; i < numWorkers; i++) {
-            workProcessors[i] = new WorkProcessor<ValueHolder<T>>(ringBuffer,
-                                                                    sequenceBarrier,
-                                                                    handlers[i],
-                                                                    exceptionHandler,
-                                                                    workSequence);
+            workProcessors[i] = new WorkProcessor<ValueHolder<T>>(ringBuffer, sequenceBarrier, handlers[i], exceptionHandler, workSequence);
         }
 
         // setup the WorkProcessor sequences (control what is consumed from the ring buffer)
@@ -198,15 +193,13 @@ class Test_Queue_Disruptor<T> {
 
 
 
-        while (workSequence.get() < expected) {
-            LockSupport.parkNanos(1L);
-        }
+        // wait for all the workers to complete the expected sequence
+        ringBuffer.newBarrier(sequences).waitFor(expected);
+
 
         for (WorkProcessor<?> processor : workProcessors) {
             processor.halt();
         }
-
-
 
         for (int i = 0; i < consumersCount; i++) {
             EventHandler h = (EventHandler) handlers[i];
