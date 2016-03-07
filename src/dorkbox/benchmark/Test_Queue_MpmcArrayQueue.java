@@ -4,7 +4,7 @@ import dorkbox.benchmark.common.Base_BlockingQueue;
 import dorkbox.benchmark.common.Base_Queue;
 
 @SuppressWarnings("Duplicates")
-public class Test_Queue_MpmcArrayQueue extends Base_BlockingQueue {
+public class Test_Queue_MpmcArrayQueue extends Base_BlockingQueue<Integer> {
 
     public static final int REPETITIONS = 50 * 1000 * 100;
 
@@ -16,7 +16,7 @@ public class Test_Queue_MpmcArrayQueue extends Base_BlockingQueue {
         System.out.format("reps: %,d  %s: \n", REPETITIONS, Test_Queue_MpmcArrayQueue.class.getSimpleName());
 
         for (int concurrency = 1; concurrency < 5; concurrency++) {
-            final org.jctools.queues.MpmcArrayQueue queue = new org.jctools.queues.MpmcArrayQueue(1 << 17);
+            final org.jctools.queues.MpmcArrayQueue<Integer> queue = new org.jctools.queues.MpmcArrayQueue<Integer>(1 << 17);
             final Integer initialValue = Integer.valueOf(777);
             new MpmcArray_NonBlock().run(REPETITIONS, concurrency, concurrency, warmups, runs, bestRunsToAverage, false, queue,
                                          initialValue);

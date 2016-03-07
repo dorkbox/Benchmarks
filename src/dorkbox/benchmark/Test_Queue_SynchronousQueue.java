@@ -14,7 +14,7 @@ public class Test_Queue_SynchronousQueue {
         System.out.format("reps: %,d  %s\n", REPETITIONS, Test_Queue_SynchronousQueue.class.getSimpleName());
 
         for (int concurrency = 1; concurrency < 5; concurrency++) {
-            final java.util.concurrent.SynchronousQueue queue = new java.util.concurrent.SynchronousQueue();
+            final java.util.concurrent.SynchronousQueue<Integer> queue = new java.util.concurrent.SynchronousQueue<Integer>();
             final Integer initialValue = Integer.valueOf(777);
             new SQ_Block().run(REPETITIONS, concurrency, concurrency, warmups, runs, bestRunsToAverage, false, queue,
                                 initialValue);
@@ -24,7 +24,7 @@ public class Test_Queue_SynchronousQueue {
         System.out.println("");
 
         for (int concurrency = 1; concurrency < 5; concurrency++) {
-            final java.util.concurrent.SynchronousQueue queue = new java.util.concurrent.SynchronousQueue();
+            final java.util.concurrent.SynchronousQueue<Integer> queue = new java.util.concurrent.SynchronousQueue<Integer>();
             final Integer initialValue = Integer.valueOf(777);
             new SQ_NonBlock().run(REPETITIONS, concurrency, concurrency, warmups, runs, bestRunsToAverage, false, queue,
                                    initialValue);

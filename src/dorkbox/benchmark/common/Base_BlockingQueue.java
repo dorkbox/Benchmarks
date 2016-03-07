@@ -52,6 +52,7 @@ class Base_BlockingQueue<T> {
      * Benchmarks how long it takes to push X number of items total. If there are is 1P and 1C, then X items will be sent from a producer to
      * a consumer. Of there are NP and NC threads, then X/N (for a total of X) items will be sent.
      */
+    @SuppressWarnings("unchecked")
     private
     long performanceRun(final int runNumber,
                         final BlockingQueue<T> queue,
@@ -69,8 +70,8 @@ class Base_BlockingQueue<T> {
         int cRepetitions = adjusted * consumersCount;
 
 
-        Producer[] producers = new Producer[producersCount];
-        Consumer[] consumers = new Consumer[consumersCount];
+        Producer<T>[] producers = new Producer[producersCount];
+        Consumer<T>[] consumers = new Consumer[consumersCount];
 
         Thread[] pThreads = new Thread[producersCount];
         Thread[] cThreads = new Thread[consumersCount];

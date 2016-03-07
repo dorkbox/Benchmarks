@@ -15,14 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public
 class Test_Queue_Disruptor<T> {
 
-    private static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
     private static boolean SHOW = true;
 
     public static final int REPETITIONS = 50 * 1000 * 100;
 
     private static final int bestRunsToAverage = 4;
     private static final int runs = 10;
-    private static final int warmups = 0;
 
     public static void main(final String[] args) throws Exception {
         System.out.format("reps: %,d  %s: \n", REPETITIONS, "Disruptor");
@@ -52,7 +50,7 @@ class Test_Queue_Disruptor<T> {
 
             for (int concurrency = 1; concurrency < 5; concurrency++) {
                 final Integer initialValue = Integer.valueOf(777);
-                new Test_Queue_Disruptor().run(REPETITIONS, concurrency, concurrency, runs, bestRunsToAverage, false,
+                new Test_Queue_Disruptor<Integer>().run(REPETITIONS, concurrency, concurrency, runs, bestRunsToAverage, false,
                                                BUFFER_SIZE, strategy, initialValue);
             }
         }
@@ -202,7 +200,7 @@ class Test_Queue_Disruptor<T> {
         }
 
         for (int i = 0; i < consumersCount; i++) {
-            EventHandler h = (EventHandler) handlers[i];
+            EventHandler<T> h = (EventHandler<T>) handlers[i];
             while (!h.isShutdown()) {
                 Thread.yield();
             }
@@ -218,7 +216,7 @@ class Test_Queue_Disruptor<T> {
             }
         }
         for (int i = 0; i < consumersCount; i++) {
-            EventHandler h = (EventHandler) handlers[i];
+            EventHandler<T> h = (EventHandler<T>) handlers[i];
             final long end1 = h.getEnd();
             if (end1 - end > 0) {
                 end = end1;
@@ -235,13 +233,13 @@ class Test_Queue_Disruptor<T> {
     }
 
 
-    public class Producer<T> implements Runnable {
-        private final RingBuffer<ValueHolder<T>> queue;
+    public class Producer<TT> implements Runnable {
+        private final RingBuffer<ValueHolder<TT>> queue;
         volatile long start;
         private int repetitions;
-        private final T initialValue;
+        private final TT initialValue;
 
-        public Producer(RingBuffer<ValueHolder<T>>  queue, int repetitions, T initialValue) {
+        public Producer(RingBuffer<ValueHolder<TT>>  queue, int repetitions, TT initialValue) {
             this.queue = queue;
             this.repetitions = repetitions;
             this.initialValue = initialValue;
@@ -249,17 +247,17 @@ class Test_Queue_Disruptor<T> {
 
         @Override
         public void run() {
-            RingBuffer<ValueHolder<T>> producer = this.queue;
+            RingBuffer<ValueHolder<TT>> producer = this.queue;
             int i = this.repetitions;
             this.start = System.nanoTime();
-            final T initialValue = this.initialValue;
+            final TT initialValue = this.initialValue;
 
             try {
                 do {
                     // setup the job
                     final long seq = producer.next();
 //                    try {
-                        ValueHolder<T> eventJob = producer.get(seq);
+                        ValueHolder<TT> eventJob = producer.get(seq);
                         eventJob.item = initialValue;
 //                    } finally {
                         // always publish the job
@@ -295,26 +293,26 @@ class Test_Queue_Disruptor<T> {
     }
 
 
-    class ValueFactory<T> implements EventFactory<ValueHolder<T>> {
+    class ValueFactory<TT> implements EventFactory<ValueHolder<TT>> {
 
         public ValueFactory() {
         }
 
         @Override
-        public ValueHolder<T> newInstance() {
-            return new ValueHolder<T>();
+        public ValueHolder<TT> newInstance() {
+            return new ValueHolder<TT>();
         }
     }
 
-    class ValueHolder<T> {
+    class ValueHolder<TT> {
 
-        public T item = null;
+        public TT item = null;
 
         public ValueHolder() {}
     }
 
 
-    class EventHandler<T> implements WorkHandler<ValueHolder<T>>, LifecycleAware{
+    class EventHandler<TT> implements WorkHandler<ValueHolder<TT>>, LifecycleAware{
         AtomicBoolean shutdown = new AtomicBoolean(false);
         private long end = 0;
 
@@ -330,7 +328,7 @@ class Test_Queue_Disruptor<T> {
 
         @Override
         public
-        void onEvent(final ValueHolder<T> event) throws Exception {
+        void onEvent(final ValueHolder<TT> event) throws Exception {
             end = System.nanoTime();
         }
 

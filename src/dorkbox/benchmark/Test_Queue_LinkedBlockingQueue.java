@@ -14,7 +14,7 @@ public class Test_Queue_LinkedBlockingQueue {
         System.out.format("reps: %,d  %s\n", REPETITIONS, Test_Queue_LinkedBlockingQueue.class.getSimpleName());
 
         for (int concurrency = 1; concurrency < 5; concurrency++) {
-            final java.util.concurrent.LinkedBlockingQueue queue = new java.util.concurrent.LinkedBlockingQueue(1024);
+            final java.util.concurrent.LinkedBlockingQueue<Integer> queue = new java.util.concurrent.LinkedBlockingQueue<Integer>(1024);
             final Integer initialValue = Integer.valueOf(777);
             new LBQ_Block().run(REPETITIONS, concurrency, concurrency, warmups, runs, bestRunsToAverage, false, queue,
                                 initialValue);
@@ -24,7 +24,7 @@ public class Test_Queue_LinkedBlockingQueue {
         System.out.println("");
 
         for (int concurrency = 1; concurrency < 5; concurrency++) {
-            final java.util.concurrent.LinkedBlockingQueue queue = new java.util.concurrent.LinkedBlockingQueue(1024);
+            final java.util.concurrent.LinkedBlockingQueue<Integer> queue = new java.util.concurrent.LinkedBlockingQueue<Integer>(1024);
             final Integer initialValue = Integer.valueOf(777);
             new LBQ_NonBlock().run(REPETITIONS, concurrency, concurrency, warmups, runs, bestRunsToAverage, false, queue,
                                    initialValue);
